@@ -195,7 +195,6 @@ public class Thumbnail {
 
 	public static void doResize(File src, File dst, Integer width, Integer height, Double ratio) {
 		try {
-			//例として、出力サイズは固定で指定される
 			Builder<File> builder = Thumbnails.of(src);
 			if((width == null || height == null) && ratio != null){
 				builder.scale(ratio).toFile(dst);
