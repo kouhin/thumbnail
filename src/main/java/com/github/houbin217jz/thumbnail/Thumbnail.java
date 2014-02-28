@@ -63,12 +63,12 @@ public class Thumbnail {
 		
 		HelpFormatter formatter = new HelpFormatter();
 		String formatstr = "java -jar thumbnail.jar "
-				+ "[-s/--src] 入力フォルダ "
-				+ "[-d/--dst] 出力フォルダ "
-				+ "[-r/--ratio] 倍率 "
-				+ "[-w/--width] 幅 "
-				+ "[-h/--height] 高さ "
-				+ "[-R/--recursive] 再帰的";
+				+ "[-s/--src <path>] "
+				+ "[-d/--dst <path>] "
+				+ "[-r/--ratio double] "
+				+ "[-w/--width integer] "
+				+ "[-h/--height integer] "
+				+ "[-R/--recursive] ";
 		
 		CommandLineParser parser = new PosixParser();
 		CommandLine cmd = null;
