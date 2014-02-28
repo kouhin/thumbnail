@@ -18,6 +18,7 @@ package com.github.houbin217jz.thumbnail;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileVisitOption;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
@@ -25,6 +26,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.EnumSet;
 
 import net.coobird.thumbnailator.Thumbnails;
 import net.coobird.thumbnailator.Thumbnails.Builder;
@@ -57,6 +59,7 @@ public class Thumbnail {
 		options.addOption("r", "ratio", true, "拡大/縮小倍率, 30%の場合は0.3で指定してください");
 		options.addOption("w", "width", true, "幅(px)");
 		options.addOption("h", "height", true, "高さ(px)");
+		options.addOption("R", "recursive", false, "再帰的に画像を探して変換する");
 		
 		HelpFormatter formatter = new HelpFormatter();
 		String formatstr = "java -jar thumbnail.jar "
@@ -64,7 +67,8 @@ public class Thumbnail {
 				+ "[-d/--dst] 出力フォルダ "
 				+ "[-r/--ratio] 倍率 "
 				+ "[-w/--width] 幅 "
-				+ "[-h/--height] 高さ ";
+				+ "[-h/--height] 高さ "
+				+ "[-R/--recursive] 再帰的";
 		
 		CommandLineParser parser = new PosixParser();
 		CommandLine cmd = null;
@@ -151,9 +155,15 @@ public class Thumbnail {
 			return;
 		}
 		
+		//走査階層数
+		int maxDepth = 1;
+		if(cmd.hasOption("R")){
+			maxDepth = Integer.MAX_VALUE;
+		}
+		
 		try {
 			//Java 7 ディレクトリ階層を走査する、@see http://docs.oracle.com/javase/jp/7/api/java/nio/file/Files.html
-			Files.walkFileTree(srcDir, new SimpleFileVisitor<Path>() {
+			Files.walkFileTree(srcDir, EnumSet.of(FileVisitOption.FOLLOW_LINKS), maxDepth, new SimpleFileVisitor<Path>() {
 				@Override
 				public FileVisitResult visitFile(Path path,
 						BasicFileAttributes basicFileAttributes) throws IOException {
